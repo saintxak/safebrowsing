@@ -545,6 +545,26 @@ func (sb *SafeBrowser) LookupURLsContext(ctx context.Context, urls []string) (th
 	return threats, nil
 }
 
+//GetThreatsList get available threat lists from api
+func (sb *SafeBrowser) GetThreatsList() ([]ThreatDescriptor, error) {
+	lists, err := sb.api.GetThreatLists(context.Background())
+
+	if err != nil {
+		return nil, err
+	}
+
+	results := make([]ThreatDescriptor, len(lists.GetThreatLists()))
+	for i, list := range lists.GetThreatLists() {
+		results[i] = ThreatDescriptor{
+			ThreatType:      ThreatType(list.GetThreatType()),
+			PlatformType:    PlatformType(list.GetPlatformType()),
+			ThreatEntryType: ThreatEntryType(list.GetThreatEntryType()),
+		}
+	}
+
+	return results, nil
+}
+
 // TODO: Add other types of lookup when available.
 //	func (sb *SafeBrowser) LookupBinaries(digests []string) (threats []BinaryThreat, err error)
 //	func (sb *SafeBrowser) LookupAddresses(addrs []string) (threats [][]AddressThreat, err error)

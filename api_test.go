@@ -27,8 +27,9 @@ import (
 )
 
 type mockAPI struct {
-	listUpdate func(context.Context, *pb.FetchThreatListUpdatesRequest) (*pb.FetchThreatListUpdatesResponse, error)
-	hashLookup func(context.Context, *pb.FindFullHashesRequest) (*pb.FindFullHashesResponse, error)
+	listUpdate     func(context.Context, *pb.FetchThreatListUpdatesRequest) (*pb.FetchThreatListUpdatesResponse, error)
+	hashLookup     func(context.Context, *pb.FindFullHashesRequest) (*pb.FindFullHashesResponse, error)
+	getThreatLists func(ctx context.Context) (*pb.ListThreatListsResponse, error)
 }
 
 func (m *mockAPI) ListUpdate(ctx context.Context, req *pb.FetchThreatListUpdatesRequest) (*pb.FetchThreatListUpdatesResponse, error) {
@@ -37,6 +38,10 @@ func (m *mockAPI) ListUpdate(ctx context.Context, req *pb.FetchThreatListUpdates
 
 func (m *mockAPI) HashLookup(ctx context.Context, req *pb.FindFullHashesRequest) (*pb.FindFullHashesResponse, error) {
 	return m.hashLookup(ctx, req)
+}
+
+func (m *mockAPI) GetThreatLists(ctx context.Context) (*pb.ListThreatListsResponse, error) {
+	return m.getThreatLists(ctx)
 }
 
 func TestNetAPI(t *testing.T) {

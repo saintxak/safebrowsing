@@ -1,4 +1,4 @@
-module github.com/google/safebrowsing
+module github.com/saintxak/safebrowsing
 
 require (
 	github.com/golang/protobuf v1.2.0
@@ -7,3 +7,5 @@ require (
 	golang.org/x/sync v0.0.0-20181221193216-37e7f081c4d4 // indirect
 	golang.org/x/text v0.3.0 // indirect
 )
+
+go 1.13

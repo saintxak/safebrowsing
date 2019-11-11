@@ -29,14 +29,16 @@ import (
 )
 
 const (
-	findHashPath    = "/v4/fullHashes:find"
-	fetchUpdatePath = "/v4/threatListUpdates:fetch"
+	findHashPath        = "/v4/fullHashes:find"
+	fetchUpdatePath     = "/v4/threatListUpdates:fetch"
+	listThreatListsPath = "/v4/threatLists"
 )
 
 // The api interface specifies wrappers around the Safe Browsing API.
 type api interface {
 	ListUpdate(ctx context.Context, req *pb.FetchThreatListUpdatesRequest) (*pb.FetchThreatListUpdatesResponse, error)
 	HashLookup(ctx context.Context, req *pb.FindFullHashesRequest) (*pb.FindFullHashesResponse, error)
+	GetThreatLists(ctx context.Context) (*pb.ListThreatListsResponse, error)
 }
 
 // netAPI is an api object that talks to the server over HTTP.
@@ -114,4 +116,34 @@ func (a *netAPI) ListUpdate(ctx context.Context, req *pb.FetchThreatListUpdatesR
 func (a *netAPI) HashLookup(ctx context.Context, req *pb.FindFullHashesRequest) (*pb.FindFullHashesResponse, error) {
 	resp := new(pb.FindFullHashesResponse)
 	return resp, a.doRequest(ctx, findHashPath, req, resp)
+}
+
+//GetThreatLists get available threat lists
+func (a *netAPI) GetThreatLists(ctx context.Context) (*pb.ListThreatListsResponse, error) {
+	resp := new(pb.ListThreatListsResponse)
+
+	u := *a.url // Make a copy of URL
+	u.Path = listThreatListsPath
+
+	httpReq, err := http.NewRequest("GET", u.String(), nil)
+	httpReq.Header.Add("Content-Type", "application/x-protobuf")
+	httpReq = httpReq.WithContext(ctx)
+	httpResp, err := http.DefaultClient.Do(httpReq)
+	if err != nil {
+		return nil, err
+	}
+	defer httpResp.Body.Close()
+
+	body, err := ioutil.ReadAll(httpResp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if httpResp.StatusCode != 200 {
+		return nil, fmt.Errorf("safebrowsing: unexpected server response code: %d, %s", httpResp.StatusCode, string(body))
+	}
+
+	err = proto.Unmarshal(body, resp)
+
+	return resp, err
 }
