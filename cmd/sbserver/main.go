@@ -200,12 +200,12 @@ import (
 	"os"
 
 	"github.com/google/safebrowsing"
-	pb "github.com/google/safebrowsing/internal/safebrowsing_proto"
+	pb "github.com/saintxak/safebrowsing/internal/safebrowsing_proto"
 
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
-	_ "github.com/google/safebrowsing/cmd/sbserver/statik"
 	"github.com/rakyll/statik/fs"
+	_ "github.com/saintxak/safebrowsing/cmd/sbserver/statik"
 )
 
 const (
