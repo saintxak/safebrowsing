@@ -199,7 +199,7 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/google/safebrowsing"
+	"github.com/saintxak/safebrowsing"
 	pb "github.com/saintxak/safebrowsing/internal/safebrowsing_proto"
 
 	"github.com/golang/protobuf/jsonpb"
